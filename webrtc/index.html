@@ -4,9 +4,6 @@
 <title>PeerJS Chat Demo</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Content-Language" content="en-us">
-
-<link href="fancy.css" rel="stylesheet" type="text/css">
-
 </head>
 
 <body>
@@ -25,16 +22,16 @@
   app.ports.createPeer.subscribe(function(id) {
     console.log("> CREATE PEER");
     myPeer = createPeer(id)
-  
+
     myPeer.on('open', function(id) {
       console.log("> PEER CONNECTED TO SERVER!");
     });
-  
+
     myPeer.on('connection', function(conn) {
       console.log("> RECEIVED A CONNECTION!");
       connect(myPeer, conn, app.ports.recvData.send);
     });
-  
+
     myPeer.on('error', function(err) {
       console.log("> ERROR!");
       console.log(err);
