@@ -20,7 +20,7 @@
   var connectedPeers = {};
 
   app.ports.createPeer.subscribe(function(id) {
-    console.log("> CREATE PEER");
+    console.log("> CREATE PEER: " + id);
     myPeer = createPeer(id)
 
     myPeer.on('open', function(id) {

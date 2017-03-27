@@ -8459,16 +8459,60 @@ var _user$project$Main$viewMessage = function (_p0) {
 			_1: {ctor: '[]'}
 		});
 };
+var _user$project$Main$updateInput = F2(
+	function (inputMsg, model) {
+		var _p2 = inputMsg;
+		switch (_p2.ctor) {
+			case 'MessageInput':
+				var _p3 = model.input;
+				var id = _p3._0;
+				var peerid = _p3._1;
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							input: {ctor: '_Tuple3', _0: id, _1: peerid, _2: _p2._0}
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'IdInput':
+				var _p4 = model.input;
+				var peerid = _p4._1;
+				var msg = _p4._2;
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							input: {ctor: '_Tuple3', _0: _p2._0, _1: peerid, _2: msg}
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			default:
+				var _p5 = model.input;
+				var id = _p5._0;
+				var msg = _p5._2;
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							input: {ctor: '_Tuple3', _0: id, _1: _p2._0, _2: msg}
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+		}
+	});
 var _user$project$Main$init = function () {
 	var model = {
 		id: '',
-		peerId: '',
-		input: '',
-		messages: {ctor: '[]'}
+		input: {ctor: '_Tuple3', _0: '', _1: '', _2: ''},
+		messages: {ctor: '[]'},
+		peers: {ctor: '[]'}
 	};
 	return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 }();
-var _user$project$Main$leaderID = 'testing';
 var _user$project$Main$createPeer = _elm_lang$core$Native_Platform.outgoingPort(
 	'createPeer',
 	function (v) {
@@ -8487,60 +8531,37 @@ var _user$project$Main$sendData = _elm_lang$core$Native_Platform.outgoingPort(
 	});
 var _user$project$Main$update = F2(
 	function (msg, model) {
-		var _p2 = msg;
-		switch (_p2.ctor) {
-			case 'MessageInput':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{input: _p2._0}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'IdInput':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{id: _p2._0}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'PeerInput':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{peerId: _p2._0}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
+		var _p6 = A2(
+			_elm_lang$core$Debug$log,
+			'(msg, model)',
+			{ctor: '_Tuple2', _0: msg, _1: model});
+		var _p7 = msg;
+		switch (_p7.ctor) {
+			case 'Input':
+				return A2(_user$project$Main$updateInput, _p7._0, model);
 			case 'SendId':
+				var _p8 = model.input;
+				var id = _p8._0;
 				return {
 					ctor: '_Tuple2',
 					_0: model,
-					_1: _user$project$Main$createPeer(model.id)
+					_1: _user$project$Main$createPeer(id)
 				};
 			case 'ConnectPeer':
+				var _p9 = model.input;
+				var peerid = _p9._1;
 				return {
 					ctor: '_Tuple2',
 					_0: model,
-					_1: _user$project$Main$connectPeer(model.peerId)
+					_1: _user$project$Main$connectPeer(peerid)
 				};
 			case 'SendData':
+				var _p10 = model.input;
+				var msg = _p10._2;
 				return {
 					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{
-							messages: A2(
-								_elm_lang$core$Basics_ops['++'],
-								model.messages,
-								{
-									ctor: '::',
-									_0: {ctor: '_Tuple2', _0: model.id, _1: model.input},
-									_1: {ctor: '[]'}
-								})
-						}),
-					_1: _user$project$Main$sendData(model.input)
+					_0: model,
+					_1: _user$project$Main$sendData(msg)
 				};
 			case 'RecvData':
 				return {
@@ -8553,7 +8574,7 @@ var _user$project$Main$update = F2(
 								model.messages,
 								{
 									ctor: '::',
-									_0: {ctor: '_Tuple2', _0: _p2._0._0, _1: _p2._0._1},
+									_0: {ctor: '_Tuple2', _0: _p7._0._0, _1: _p7._0._1},
 									_1: {ctor: '[]'}
 								})
 						}),
@@ -8564,7 +8585,7 @@ var _user$project$Main$update = F2(
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{id: _p2._0}),
+						{id: _p7._0}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 		}
@@ -8608,6 +8629,9 @@ var _user$project$Main$subscriptions = function (model) {
 var _user$project$Main$SendId = {ctor: 'SendId'};
 var _user$project$Main$SendData = {ctor: 'SendData'};
 var _user$project$Main$ConnectPeer = {ctor: 'ConnectPeer'};
+var _user$project$Main$Input = function (a) {
+	return {ctor: 'Input', _0: a};
+};
 var _user$project$Main$PeerInput = function (a) {
 	return {ctor: 'PeerInput', _0: a};
 };
@@ -8620,7 +8644,11 @@ var _user$project$Main$peerInput = A2(
 			_elm_lang$html$Html$input,
 			{
 				ctor: '::',
-				_0: _elm_lang$html$Html_Events$onInput(_user$project$Main$PeerInput),
+				_0: _elm_lang$html$Html_Events$onInput(
+					function (_p11) {
+						return _user$project$Main$Input(
+							_user$project$Main$PeerInput(_p11));
+					}),
 				_1: {ctor: '[]'}
 			},
 			{ctor: '[]'}),
@@ -8653,7 +8681,11 @@ var _user$project$Main$idInput = A2(
 			_elm_lang$html$Html$input,
 			{
 				ctor: '::',
-				_0: _elm_lang$html$Html_Events$onInput(_user$project$Main$IdInput),
+				_0: _elm_lang$html$Html_Events$onInput(
+					function (_p12) {
+						return _user$project$Main$Input(
+							_user$project$Main$IdInput(_p12));
+					}),
 				_1: {ctor: '[]'}
 			},
 			{ctor: '[]'}),
@@ -8686,7 +8718,11 @@ var _user$project$Main$messageInput = A2(
 			_elm_lang$html$Html$input,
 			{
 				ctor: '::',
-				_0: _elm_lang$html$Html_Events$onInput(_user$project$Main$MessageInput),
+				_0: _elm_lang$html$Html_Events$onInput(
+					function (_p13) {
+						return _user$project$Main$Input(
+							_user$project$Main$MessageInput(_p13));
+					}),
 				_1: {ctor: '[]'}
 			},
 			{ctor: '[]'}),

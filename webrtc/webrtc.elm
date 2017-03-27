@@ -6,9 +6,6 @@ import Html.Events exposing (..)
 import Html.Events.Extra exposing (onEnter)
 
 
--- import Html.Events.Extra exposing (..)
-
-
 main =
     Html.program
         { init = init
@@ -24,23 +21,31 @@ main =
 
 type alias Model =
     { id : String
-    , input : String
+    , input : ( Id, PeerId, Message )
     , messages : List ( String, String )
     , peers : List String
     }
 
 
-leaderID =
-    "testing"
+type alias Id =
+    String
+
+
+type alias PeerId =
+    String
+
+
+type alias Message =
+    String
 
 
 init =
     let
         model =
             { id = ""
-            , peerId = ""
-            , input = ""
+            , input = ( "", "", "" )
             , messages = []
+            , peers = []
             }
     in
         ( model, Cmd.none )
@@ -51,9 +56,7 @@ init =
 
 
 type Msg
-    = MessageInput String
-    | IdInput String
-    | PeerInput String
+    = Input Input
     | ConnectPeer
     | SendData
     | SendId
@@ -61,25 +64,38 @@ type Msg
     | NewID String
 
 
+type Input
+    = MessageInput String
+    | IdInput String
+    | PeerInput String
+
+
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        MessageInput str ->
-            ( { model | input = str }, Cmd.none )
-
-        IdInput str ->
-            ( { model | id = str }, Cmd.none )
-
-        PeerInput str ->
-            ( { model | peerId = str }, Cmd.none )
+        Input input ->
+            updateInput input model
 
         SendId ->
-            ( model, createPeer model.id )
+            let
+                ( id, _, _ ) =
+                    model.input
+            in
+                ( model, createPeer id )
 
         ConnectPeer ->
-            ( model, connectPeer model.peerId )
+            let
+                ( _, peerid, _ ) =
+                    model.input
+            in
+                ( model, connectPeer peerid )
 
         SendData ->
-            ( { model | messages = model.messages ++ [ ( model.id, model.input ) ] }, sendData model.input )
+            let
+                ( _, _, msg ) =
+                    model.input
+            in
+                ( model, sendData msg )
 
         RecvData ( id, data ) ->
             ( { model | messages = model.messages ++ [ ( id, data ) ] }, Cmd.none )
@@ -88,10 +104,36 @@ update msg model =
             ( { model | id = id }, Cmd.none )
 
 
+updateInput : Input -> Model -> ( Model, Cmd Msg )
+updateInput inputMsg model =
+    case inputMsg of
+        MessageInput msg ->
+            let
+                ( id, peerid, _ ) =
+                    model.input
+            in
+                ( { model | input = ( id, peerid, msg ) }, Cmd.none )
+
+        IdInput id ->
+            let
+                ( _, peerid, msg ) =
+                    model.input
+            in
+                ( { model | input = ( id, peerid, msg ) }, Cmd.none )
+
+        PeerInput peerid ->
+            let
+                ( id, _, msg ) =
+                    model.input
+            in
+                ( { model | input = ( id, peerid, msg ) }, Cmd.none )
+
+
 
 -- VIEW
 
 
+view : Model -> Html Msg
 view model =
     div []
         [ div []
@@ -103,34 +145,38 @@ view model =
         ]
 
 
+viewMessage : ( String, String ) -> Html Msg
 viewMessage ( id, msg ) =
     div [] [ Html.text (id ++ ": " ++ msg) ]
 
 
+idInput : Html Msg
 idInput =
     div []
         [ input
-            [ onInput IdInput
+            [ onInput (IdInput >> Input)
             ]
             []
         , button [ onClick SendId ] [ text "Create" ]
         ]
 
 
+peerInput : Html Msg
 peerInput =
     div []
         [ input
-            [ onInput PeerInput
+            [ onInput (PeerInput >> Input)
             ]
             []
         , button [ onClick ConnectPeer ] [ text "Connect" ]
         ]
 
 
+messageInput : Html Msg
 messageInput =
     div []
         [ input
-            [ onInput MessageInput
+            [ onInput (MessageInput >> Input)
             ]
             []
         , button [ onClick SendData ] [ text "Send" ]
@@ -141,6 +187,7 @@ messageInput =
 -- SUBSCRIPTIONS
 
 
+subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
         [ recvData RecvData
