@@ -1,0 +1,64 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<title>PeerJS Chat Demo</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-us">
+
+<link href="fancy.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body>
+<div id="webrtc"></div>
+
+<script type="text/javascript" src="peerjs/dist/peer.js"></script>
+<script type='text/javascript' src='helper.js'></script>
+<script src="webrtc.js"></script>
+
+<script>
+  var app = Elm.Main.fullscreen();
+
+  var myPeer;
+  var connectedPeers = {};
+
+  app.ports.createPeer.subscribe(function(id) {
+    console.log("> CREATE PEER");
+    myPeer = createPeer(id)
+  
+    myPeer.on('open', function(id) {
+      console.log("> PEER CONNECTED TO SERVER!");
+    });
+  
+    myPeer.on('connection', function(conn) {
+      console.log("> RECEIVED A CONNECTION!");
+      connect(myPeer, conn, app.ports.recvData.send);
+    });
+  
+    myPeer.on('error', function(err) {
+      console.log("> ERROR!");
+      console.log(err);
+    });
+
+    myPeer.on('close', function() {
+      console.log("> PEER CLOSED!");
+    });
+
+    myPeer.on('disconnected', function() {
+      console.log("> PEER DISCONNECTED!");
+    });
+
+  });
+
+  app.ports.connectPeer.subscribe(function(peerId) {
+      connectToPeer(myPeer, peerId, app.ports.recvData.send)
+  });
+
+  app.ports.sendData.subscribe(function(msg) {
+     console.log("> SEND " + msg);
+     sendMessage(msg);
+  });
+
+</script>
+</body>
+</html>
