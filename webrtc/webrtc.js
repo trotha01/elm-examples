@@ -8531,33 +8531,29 @@ var _user$project$Main$sendData = _elm_lang$core$Native_Platform.outgoingPort(
 	});
 var _user$project$Main$update = F2(
 	function (msg, model) {
-		var _p6 = A2(
-			_elm_lang$core$Debug$log,
-			'(msg, model)',
-			{ctor: '_Tuple2', _0: msg, _1: model});
-		var _p7 = msg;
-		switch (_p7.ctor) {
+		var _p6 = msg;
+		switch (_p6.ctor) {
 			case 'Input':
-				return A2(_user$project$Main$updateInput, _p7._0, model);
+				return A2(_user$project$Main$updateInput, _p6._0, model);
 			case 'SendId':
-				var _p8 = model.input;
-				var id = _p8._0;
+				var _p7 = model.input;
+				var id = _p7._0;
 				return {
 					ctor: '_Tuple2',
 					_0: model,
 					_1: _user$project$Main$createPeer(id)
 				};
 			case 'ConnectPeer':
-				var _p9 = model.input;
-				var peerid = _p9._1;
+				var _p8 = model.input;
+				var peerid = _p8._1;
 				return {
 					ctor: '_Tuple2',
 					_0: model,
 					_1: _user$project$Main$connectPeer(peerid)
 				};
 			case 'SendData':
-				var _p10 = model.input;
-				var msg = _p10._2;
+				var _p9 = model.input;
+				var msg = _p9._2;
 				return {
 					ctor: '_Tuple2',
 					_0: model,
@@ -8574,7 +8570,7 @@ var _user$project$Main$update = F2(
 								model.messages,
 								{
 									ctor: '::',
-									_0: {ctor: '_Tuple2', _0: _p7._0._0, _1: _p7._0._1},
+									_0: {ctor: '_Tuple2', _0: _p6._0._0, _1: _p6._0._1},
 									_1: {ctor: '[]'}
 								})
 						}),
@@ -8585,7 +8581,7 @@ var _user$project$Main$update = F2(
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{id: _p7._0}),
+						{id: _p6._0}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 		}
@@ -8645,9 +8641,9 @@ var _user$project$Main$peerInput = A2(
 			{
 				ctor: '::',
 				_0: _elm_lang$html$Html_Events$onInput(
-					function (_p11) {
+					function (_p10) {
 						return _user$project$Main$Input(
-							_user$project$Main$PeerInput(_p11));
+							_user$project$Main$PeerInput(_p10));
 					}),
 				_1: {ctor: '[]'}
 			},
@@ -8682,9 +8678,9 @@ var _user$project$Main$idInput = A2(
 			{
 				ctor: '::',
 				_0: _elm_lang$html$Html_Events$onInput(
-					function (_p12) {
+					function (_p11) {
 						return _user$project$Main$Input(
-							_user$project$Main$IdInput(_p12));
+							_user$project$Main$IdInput(_p11));
 					}),
 				_1: {ctor: '[]'}
 			},
@@ -8719,9 +8715,9 @@ var _user$project$Main$messageInput = A2(
 			{
 				ctor: '::',
 				_0: _elm_lang$html$Html_Events$onInput(
-					function (_p13) {
+					function (_p12) {
 						return _user$project$Main$Input(
-							_user$project$Main$MessageInput(_p13));
+							_user$project$Main$MessageInput(_p12));
 					}),
 				_1: {ctor: '[]'}
 			},
