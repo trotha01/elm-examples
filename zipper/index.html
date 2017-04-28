@@ -7882,47 +7882,114 @@ var _elm_lang$html$Html_Events$Options = F2(
 	function (a, b) {
 		return {stopPropagation: a, preventDefault: b};
 	});
-var _user$project$Main$init = {selection: ''};
-var _user$project$Main$Model = function (a) {
-	return {selection: a};
+var _user$project$Main$currentOption = F2(
+	function (n, options) {
+		return A2(
+			_elm_lang$core$Maybe$withDefault,
+			'',
+			_elm_lang$core$List$head(
+				A2(_elm_lang$core$List$drop, n, options)));
+	});
+var _user$project$Main$previousOption = F2(
+	function (n, options) {
+		return A2(_elm_lang$core$Basics$max, 0, n - 1);
+	});
+var _user$project$Main$nextOption = F2(
+	function (n, options) {
+		return A2(
+			_elm_lang$core$Basics$min,
+			_elm_lang$core$List$length(options) - 1,
+			n + 1);
+	});
+var _user$project$Main$update = F2(
+	function (msg, model) {
+		var _p0 = msg;
+		if (_p0.ctor === 'Next') {
+			return _elm_lang$core$Native_Utils.update(
+				model,
+				{
+					selection: A2(_user$project$Main$nextOption, model.selection, model.options)
+				});
+		} else {
+			return _elm_lang$core$Native_Utils.update(
+				model,
+				{
+					selection: A2(_user$project$Main$previousOption, model.selection, model.options)
+				});
+		}
+	});
+var _user$project$Main$init = {
+	selection: 0,
+	options: {
+		ctor: '::',
+		_0: 'one',
+		_1: {
+			ctor: '::',
+			_0: 'two',
+			_1: {
+				ctor: '::',
+				_0: 'three',
+				_1: {ctor: '[]'}
+			}
+		}
+	}
 };
-var _user$project$Main$Select = function (a) {
-	return {ctor: 'Select', _0: a};
-};
+var _user$project$Main$Model = F2(
+	function (a, b) {
+		return {selection: a, options: b};
+	});
+var _user$project$Main$Previous = {ctor: 'Previous'};
+var _user$project$Main$Next = {ctor: 'Next'};
 var _user$project$Main$view = function (model) {
 	return A2(
-		_elm_lang$html$Html$select,
-		{
-			ctor: '::',
-			_0: _elm_lang$html$Html_Events$onInput(_user$project$Main$Select),
-			_1: {ctor: '[]'}
-		},
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
 		{
 			ctor: '::',
 			_0: A2(
-				_elm_lang$html$Html$option,
-				{ctor: '[]'},
+				_elm_lang$html$Html$button,
 				{
 					ctor: '::',
-					_0: _elm_lang$html$Html$text('one'),
+					_0: _elm_lang$html$Html_Events$onClick(_user$project$Main$Previous),
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text('<-'),
 					_1: {ctor: '[]'}
 				}),
 			_1: {
 				ctor: '::',
 				_0: A2(
-					_elm_lang$html$Html$option,
-					{ctor: '[]'},
+					_elm_lang$html$Html$button,
 					{
 						ctor: '::',
-						_0: _elm_lang$html$Html$text('two'),
+						_0: _elm_lang$html$Html_Events$onClick(_user$project$Main$Next),
+						_1: {ctor: '[]'}
+					},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text('->'),
 						_1: {ctor: '[]'}
 					}),
-				_1: {ctor: '[]'}
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$div,
+						{ctor: '[]'},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text(
+								A2(_user$project$Main$currentOption, model.selection, model.options)),
+							_1: {ctor: '[]'}
+						}),
+					_1: {ctor: '[]'}
+				}
 			}
 		});
 };
-var _user$project$Main$main = _elm_lang$virtual_dom$Native_VirtualDom.staticProgram(
-	_user$project$Main$view(_user$project$Main$init));
+var _user$project$Main$main = _elm_lang$html$Html$beginnerProgram(
+	{model: _user$project$Main$init, view: _user$project$Main$view, update: _user$project$Main$update})();
 var Elm = {};
 Elm['Main'] = Elm['Main'] || {};
 if (typeof _user$project$Main$main !== 'undefined') {

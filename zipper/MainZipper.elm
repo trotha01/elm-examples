@@ -2,7 +2,7 @@ module Main exposing (..)
 
 import Html exposing (Html, text, div, button)
 import Html.Events exposing (onClick)
-import Zipper exposing (Zipper)
+import List.Zipper as Zipper exposing (Zipper(..))
 
 
 main =
@@ -37,10 +37,10 @@ update : Msg -> Model -> Model
 update msg model =
     case msg of
         Next ->
-            { model | selection = nextOption model.selection model.options }
+            { model | options = nextOption model.options }
 
         Previous ->
-            { model | selection = previousOption model.selection model.options }
+            { model | options = previousOption model.options }
 
 
 nextOption : Zipper String -> Zipper String
@@ -51,14 +51,14 @@ nextOption options =
 
 
 previousOption : Zipper String -> Zipper String
-previousOption n options =
+previousOption options =
     options
         |> Zipper.previous
         |> Maybe.withDefault options
 
 
 currentOption : Zipper String -> String
-currentOption n options =
+currentOption options =
     options
         |> Zipper.current
 
@@ -73,6 +73,6 @@ view model =
         [ button [ onClick Previous ] [ text "<-" ]
         , button [ onClick Next ] [ text "->" ]
         , div []
-            [ text (currentOption model.selection model.options)
+            [ text (currentOption model.options)
             ]
         ]
