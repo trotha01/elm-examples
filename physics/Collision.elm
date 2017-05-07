@@ -1,4 +1,4 @@
-module Collision exposing (..)
+module Collision exposing (Velocity, Shape(Rect, Circle), Position, Dimensions, height, width, collideWith, collideList)
 
 import Math.Vector2 as Vec2 exposing (Vec2, vec2, getX, getY)
 import Time exposing (Time)
@@ -68,6 +68,7 @@ collideList_ acc bodies =
         h :: t ->
             case collideWith t h of
                 ( h1, [] ) ->
+                    -- (++) instead of (::) to keep the order of the list
                     acc ++ [ h1 ]
 
                 ( h1, t1 ) ->
@@ -151,16 +152,15 @@ collideCircles ( pos0, radius0 ) ( pos1, radius1 ) =
             radius0 + radius1
 
         distanceSq =
+            -- simple optimization: doesn't compute sqrt unless necessary
             Vec2.lengthSquared b0b1
-
-        -- simple optimization: doesn't compute sqrt unless necessary
     in
         if distanceSq == 0 then
-            CollisionResult (vec2 1 0) radius0
             -- same position, arbitrary normal
+            CollisionResult (vec2 1 0) radius0
         else if distanceSq >= radiusb0b1 * radiusb0b1 then
-            CollisionResult (vec2 1 0) 0
             -- no intersection, arbitrary normal
+            CollisionResult (vec2 1 0) 0
         else
             let
                 d =
@@ -177,17 +177,17 @@ collideBoxes : ( Vec2, Vec2 ) -> ( Vec2, Vec2 ) -> CollisionResult
 collideBoxes ( pos0, extents0 ) ( pos1, extents1 ) =
     let
         dist =
+            -- vector between box centerpoints
             Vec2.sub pos1 pos0
 
-        -- vector between box centerpoints
         ( nx, ny ) =
             Vec2.toTuple dist
 
         ( ox, oy ) =
-            Vec2.sub (Vec2.add extents0 extents1) (abs2 dist)
+            -- overlaps
+            (Vec2.add extents0 extents1)
+                |> Vec2.sub (abs2 dist)
                 |> Vec2.toTuple
-
-        -- overlaps
     in
         if ox > 0 && oy > 0 then
             if ox < oy then
@@ -286,18 +286,18 @@ resolveCollision { normal, penetration } b0 b1 =
         else
             let
                 restitution =
+                    -- collision restitution
                     min b0.restitution b1.restitution
 
-                -- collision restitution
                 invMassSum =
                     (b0.inverseMass + b1.inverseMass)
 
-                -- impulse scalar
                 j =
+                    -- impulse scalar
                     (-(1 + restitution) * velocityAlongNormal) / invMassSum
 
-                -- impulse vector
                 impulse =
+                    -- impulse vector
                     Vec2.scale j normal
             in
                 ( { b0 | velocity = Vec2.sub b0.velocity (Vec2.scale b0.inverseMass impulse) }

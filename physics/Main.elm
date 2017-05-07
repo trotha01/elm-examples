@@ -47,7 +47,18 @@ type alias Object =
 
 init : ( Model, Cmd Msg )
 init =
-    ( { pause = False, window = initWindow, objects = [ initCircle ( 100, 100 ) "blue", initCircle ( 100, 400 ) "red" ], walls = [] }
+    ( { pause = False
+      , window = initWindow
+      , objects =
+            [ initCircle ( 100, 100 ) "red"
+            , initCircle ( 110, 200 ) "orange"
+            , initCircle ( 120, 300 ) "yellow"
+            , initCircle ( 130, 400 ) "green"
+            , initCircle ( 140, 500 ) "cyan"
+            , initCircle ( 150, 600 ) "purple"
+            ]
+      , walls = []
+      }
     , Task.perform WindowResize Window.size
     )
 
@@ -61,9 +72,9 @@ initWindow =
 -}
 initCircle : ( Float, Float ) -> String -> Object
 initCircle ( left, top ) color =
-    { shape = Circle 64
+    { shape = Circle 32
     , position = vec2 left top
-    , velocity = vec2 -0.2 0.2
+    , velocity = vec2 0.4 0.4
     , inverseMass = 0.5
     , restitution = 1
     , id = "ball"
@@ -92,7 +103,7 @@ leftWall ( width, height ) =
 
 rightWall : ( Float, Float ) -> Object
 rightWall ( width, height ) =
-    initRect (vec2 (width / 2) (height / 2)) (vec2 1 height) "right"
+    initRect (vec2 width (height / 2)) (vec2 1 height) "right"
 
 
 topWall : ( Float, Float ) -> Object
@@ -175,7 +186,7 @@ view model =
 pause : Bool -> Html Msg
 pause paused =
     if paused then
-        button [ onClick Pause ] [ text "Play..." ]
+        button [ onClick Pause ] [ text "Play" ]
     else
         button [ onClick Pause ] [ text "Pause" ]
 
@@ -198,10 +209,10 @@ viewCircle radius object =
             , ( "background-color", object.color )
             , ( "border", "1px solid black" )
             , ( "position", "absolute" )
-            , ( "left", (Vec2.getX object.position |> flip (-) (radius / 2) |> toString |> flip (++) "px") )
-            , ( "top", (Vec2.getY object.position |> flip (-) (radius / 2) |> toString |> flip (++) "px") )
-            , ( "width", (toString radius) ++ "px" )
-            , ( "height", (toString radius) ++ "px" )
+            , ( "left", (Vec2.getX object.position |> flip (-) (radius) |> toString |> flip (++) "px") )
+            , ( "top", (Vec2.getY object.position |> flip (-) (radius) |> toString |> flip (++) "px") )
+            , ( "width", (toString (radius * 2)) ++ "px" )
+            , ( "height", (toString (radius * 2)) ++ "px" )
             ]
          ]
         )
