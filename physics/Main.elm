@@ -1,14 +1,14 @@
 module Main exposing (..)
 
 import AnimationFrame
-import Html exposing (Html, div, text, button)
-import Html.Attributes exposing (style, id)
+import Collision exposing (Dimensions, Position, Shape(Circle, Rect), Velocity, collideList, collideWith, height, width)
+import Html exposing (Html, button, div, text)
+import Html.Attributes exposing (id, style)
 import Html.Events exposing (onClick)
-import Math.Vector2 as Vec2 exposing (Vec2, vec2, getX, getY)
-import Time exposing (Time)
+import Math.Vector2 as Vec2 exposing (Vec2, getX, getY, vec2)
 import Task
+import Time exposing (Time)
 import Window
-import Collision exposing (Velocity, Shape(Rect, Circle), Position, Dimensions, height, width, collideWith, collideList)
 
 
 -- MAIN
@@ -23,8 +23,10 @@ main =
 
 
 {-| The only reason walls are separate
- -  from objects is because of window resize,
- -  where we need to change the walls
+
+  - from objects is because of window resize,
+  - where we need to change the walls
+
 -}
 type alias Model =
     { objects : List Object
@@ -135,16 +137,16 @@ update msg model =
         WindowResize size ->
             let
                 map =
-                    (( toFloat size.width, toFloat size.height ))
+                    ( toFloat size.width, toFloat size.height )
             in
-                ( { model
-                    | window = size
-                    , objects =
-                        model.objects
-                    , walls = [ leftWall map, rightWall map, topWall map, bottomWall map ]
-                  }
-                , Cmd.none
-                )
+            ( { model
+                | window = size
+                , objects =
+                    model.objects
+                , walls = [ leftWall map, rightWall map, topWall map, bottomWall map ]
+              }
+            , Cmd.none
+            )
 
         Tick tDelta ->
             ( { model
@@ -164,7 +166,9 @@ type alias Movable a =
 
 
 {-| move uses the time delta, position and velocity to calculate the new position
- - p1 = p0 + v0*dt
+
+  - p1 = p0 + v0*dt
+
 -}
 move : Time -> Movable a -> Movable a
 move tDelta ({ position, velocity } as object) =
@@ -179,7 +183,7 @@ view : Model -> Html Msg
 view model =
     div []
         (pause model.pause
-            :: (List.map viewObject (model.objects ++ model.walls))
+            :: List.map viewObject (model.objects ++ model.walls)
         )
 
 
@@ -204,36 +208,34 @@ viewObject object =
 viewCircle : Float -> Object -> Html Msg
 viewCircle radius object =
     div
-        ([ style
+        [ style
             [ ( "border-radius", "50%" )
             , ( "background-color", object.color )
             , ( "border", "1px solid black" )
             , ( "position", "absolute" )
-            , ( "left", (Vec2.getX object.position |> flip (-) (radius) |> toString |> flip (++) "px") )
-            , ( "top", (Vec2.getY object.position |> flip (-) (radius) |> toString |> flip (++) "px") )
-            , ( "width", (toString (radius * 2)) ++ "px" )
-            , ( "height", (toString (radius * 2)) ++ "px" )
+            , ( "left", Vec2.getX object.position |> flip (-) radius |> toString |> flip (++) "px" )
+            , ( "top", Vec2.getY object.position |> flip (-) radius |> toString |> flip (++) "px" )
+            , ( "width", toString (radius * 2) ++ "px" )
+            , ( "height", toString (radius * 2) ++ "px" )
             ]
-         ]
-        )
+        ]
         []
 
 
 viewRect : Dimensions -> Object -> Html Msg
 viewRect dimensions object =
     div
-        ([ style
+        [ style
             [ ( "background-color", object.color )
             , ( "border", "1px solid black" )
             , ( "position", "absolute" )
-            , ( "left", (Vec2.getX object.position |> flip (-) ((width dimensions) / 2) |> toString |> flip (++) "px") )
-            , ( "top", (Vec2.getY object.position |> flip (-) ((height dimensions) / 2) |> toString |> flip (++) "px") )
+            , ( "left", Vec2.getX object.position |> flip (-) (width dimensions / 2) |> toString |> flip (++) "px" )
+            , ( "top", Vec2.getY object.position |> flip (-) (height dimensions / 2) |> toString |> flip (++) "px" )
             , ( "width", (toString <| width dimensions) ++ "px" )
             , ( "height", (toString <| height dimensions) ++ "px" )
             ]
-         , id object.id
-         ]
-        )
+        , id object.id
+        ]
         []
 
 

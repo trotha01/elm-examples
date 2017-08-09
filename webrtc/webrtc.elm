@@ -48,7 +48,7 @@ init =
             , peers = []
             }
     in
-        ( model, Cmd.none )
+    ( model, Cmd.none )
 
 
 
@@ -81,21 +81,21 @@ update msg model =
                 ( id, _, _ ) =
                     model.input
             in
-                ( model, createPeer id )
+            ( model, createPeer id )
 
         ConnectPeer ->
             let
                 ( _, peerid, _ ) =
                     model.input
             in
-                ( model, connectPeer peerid )
+            ( model, connectPeer peerid )
 
         SendData ->
             let
                 ( _, _, msg ) =
                     model.input
             in
-                ( model, sendData msg )
+            ( model, sendData msg )
 
         RecvData ( id, data ) ->
             ( { model | messages = model.messages ++ [ ( id, data ) ] }, Cmd.none )
@@ -112,21 +112,21 @@ updateInput inputMsg model =
                 ( id, peerid, _ ) =
                     model.input
             in
-                ( { model | input = ( id, peerid, msg ) }, Cmd.none )
+            ( { model | input = ( id, peerid, msg ) }, Cmd.none )
 
         IdInput id ->
             let
                 ( _, peerid, msg ) =
                     model.input
             in
-                ( { model | input = ( id, peerid, msg ) }, Cmd.none )
+            ( { model | input = ( id, peerid, msg ) }, Cmd.none )
 
         PeerInput peerid ->
             let
                 ( id, _, msg ) =
                     model.input
             in
-                ( { model | input = ( id, peerid, msg ) }, Cmd.none )
+            ( { model | input = ( id, peerid, msg ) }, Cmd.none )
 
 
 

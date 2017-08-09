@@ -1,9 +1,9 @@
 module Route exposing (Route(..), fromLocation, href)
 
-import UrlParser as Url exposing (parseHash, s, (</>), string, oneOf, Parser)
-import Navigation exposing (Location)
 import Html exposing (Attribute)
 import Html.Attributes as Attr
+import Navigation exposing (Location)
+import UrlParser as Url exposing ((</>), Parser, oneOf, parseHash, s, string)
 
 
 type Route
@@ -30,7 +30,7 @@ routeToString page =
                 About ->
                     [ "about" ]
     in
-        "#/" ++ (String.join "/" pieces)
+    "#/" ++ String.join "/" pieces
 
 
 href : Route -> Attribute msg

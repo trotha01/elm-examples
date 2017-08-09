@@ -1,13 +1,13 @@
 module Main exposing (..)
 
-import Html exposing (Html, button, text, div)
+import Html exposing (Html, button, div, text)
 import Html.Events exposing (onClick)
-import Route exposing (Route)
-import Util exposing ((=>))
-import Page.Home as Home
+import Navigation exposing (Location)
 import Page.About as About
 import Page.Errored as Errored exposing (PageLoadError)
-import Navigation exposing (Location)
+import Page.Home as Home
+import Route exposing (Route)
+import Util exposing ((=>))
 
 
 main =
@@ -49,10 +49,10 @@ setRoute maybeRoute model =
         Nothing ->
             ( model, Cmd.none )
 
-        Just (Route.Home) ->
+        Just Route.Home ->
             ( { model | page = Home }, Cmd.none )
 
-        Just (Route.About) ->
+        Just Route.About ->
             ( { model | page = About }, Cmd.none )
 
 

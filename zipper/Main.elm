@@ -1,6 +1,6 @@
 module Main exposing (..)
 
-import Html exposing (Html, text, div, button)
+import Html exposing (Html, button, div, text)
 import Html.Events exposing (onClick)
 
 
@@ -47,7 +47,7 @@ update msg model =
 nextOption : Int -> List String -> Int
 nextOption n options =
     (n + 1)
-        |> min ((List.length options) - 1)
+        |> min (List.length options - 1)
 
 
 previousOption : Int -> List String -> Int

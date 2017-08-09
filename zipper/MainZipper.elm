@@ -1,6 +1,6 @@
 module Main exposing (..)
 
-import Html exposing (Html, text, div, button)
+import Html exposing (Html, button, div, text)
 import Html.Events exposing (onClick)
 import List.Zipper as Zipper exposing (Zipper(..))
 

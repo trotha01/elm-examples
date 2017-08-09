@@ -1,9 +1,9 @@
 module Main exposing (..)
 
+import Css exposing (backgroundColor, backgroundImage, height, hsl, property, px, width)
+import Css.Colors exposing (blue)
 import Html exposing (Html, div)
 import Html.Attributes exposing (style)
-import Css exposing (backgroundColor, backgroundImage, property, height, width, px, hsl)
-import Css.Colors exposing (blue)
 
 
 main : Html a
@@ -34,7 +34,8 @@ clouds =
                 ]
             , width (px 100)
             , height (px 100)
-              -- , backgroundSize ( px 100, px 100 )
+
+            -- , backgroundSize ( px 100, px 100 )
             ]
         ]
         []
@@ -133,12 +134,12 @@ backgroundImage imgs =
 
 linearGradient : Int -> List Gradient -> String
 linearGradient angle gradients =
-    gradientProperty "linear-gradient" [ (toString angle) ++ "deg" ] gradients
+    gradientProperty "linear-gradient" [ toString angle ++ "deg" ] gradients
 
 
 repeatingLinearGradient : Int -> List Gradient -> String
 repeatingLinearGradient angle gradients =
-    gradientProperty "repeating-linear-gradient" [ (toString angle) ++ "deg" ] gradients
+    gradientProperty "repeating-linear-gradient" [ toString angle ++ "deg" ] gradients
 
 
 type Shape
@@ -184,20 +185,19 @@ radialGradient position shape size gradients =
     gradientProperty
         "-webkit-radial-gradient"
         [ positionToString position
-        , (toString shape) ++ " " ++ (toString size)
+        , toString shape ++ " " ++ toString size
         ]
         gradients
 
 
 gradientProperty : String -> List String -> List Gradient -> String
 gradientProperty gradient metadata gradients =
-    (gradient
+    gradient
         ++ "("
         ++ String.join "," metadata
         ++ ", "
         ++ gradientsToString gradients
         ++ ")"
-    )
 
 
 styles =

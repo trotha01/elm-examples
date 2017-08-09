@@ -1,6 +1,6 @@
 module Page.About exposing (view)
 
-import Html exposing (Html, button, div, text, a)
+import Html exposing (Html, a, button, div, text)
 import Route
 
 

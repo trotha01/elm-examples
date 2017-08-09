@@ -1,6 +1,6 @@
-module Collision exposing (Velocity, Shape(Rect, Circle), Position, Dimensions, height, width, collideWith, collideList)
+module Collision exposing (Dimensions, Position, Shape(Circle, Rect), Velocity, collideList, collideWith, height, width)
 
-import Math.Vector2 as Vec2 exposing (Vec2, vec2, getX, getY)
+import Math.Vector2 as Vec2 exposing (Vec2, getX, getY, vec2)
 import Time exposing (Time)
 
 
@@ -52,7 +52,9 @@ height =
 
 
 {-| run collision detection and resolition
- -  between all the given list of objects
+
+  - between all the given list of objects
+
 -}
 collideList : List (Object a) -> List (Object a)
 collideList objects =
@@ -76,8 +78,8 @@ collideList_ acc bodies =
 
 
 {-| Collide a single object with a list of objects,
-    modifying the single object and the list of objects along the way.
-   return (updated object, [updated objects])
+modifying the single object and the list of objects along the way.
+return (updated object, [updated objects])
 -}
 collideWith : List (Object a) -> Object a -> ( Object a, List (Object a) )
 collideWith bodies a0 =
@@ -98,7 +100,7 @@ collideWith_ bodies acc a0 =
                 ( a1, b1 ) =
                     resolveCollision collisionResult a0 b0
             in
-                collideWith_ bs (acc ++ [ b1 ]) a1
+            collideWith_ bs (acc ++ [ b1 ]) a1
 
 
 type alias CollisionResult =
@@ -140,7 +142,7 @@ negateNormal collision =
 
 
 {-| Calculate CollisionResult for two circles
---  takes position vector and radius for each circle
+-- takes position vector and radius for each circle
 -}
 collideCircles : ( Position, Radius ) -> ( Position, Radius ) -> CollisionResult
 collideCircles ( pos0, radius0 ) ( pos1, radius1 ) =
@@ -155,22 +157,21 @@ collideCircles ( pos0, radius0 ) ( pos1, radius1 ) =
             -- simple optimization: doesn't compute sqrt unless necessary
             Vec2.lengthSquared b0b1
     in
-        if distanceSq == 0 then
-            -- same position, arbitrary normal
-            CollisionResult (vec2 1 0) radius0
-        else if distanceSq >= radiusb0b1 * radiusb0b1 then
-            -- no intersection, arbitrary normal
-            CollisionResult (vec2 1 0) 0
-        else
-            let
-                d =
-                    sqrt distanceSq
-            in
-                CollisionResult (Vec2.scale (1 / d) b0b1) (radiusb0b1 - d)
+    if distanceSq == 0 then
+        -- same position, arbitrary normal
+        CollisionResult (vec2 1 0) radius0
+    else if distanceSq >= radiusb0b1 * radiusb0b1 then
+        -- no intersection, arbitrary normal
+        CollisionResult (vec2 1 0) 0
+    else
+        let
+            d =
+                sqrt distanceSq
+        in
+        CollisionResult (Vec2.scale (1 / d) b0b1) (radiusb0b1 - d)
 
 
-{-|
--- collide two boxes
+{-| -- collide two boxes
 -- takes positions vector and half-lengths vectors of boxes
 -}
 collideBoxes : ( Vec2, Vec2 ) -> ( Vec2, Vec2 ) -> CollisionResult
@@ -185,22 +186,22 @@ collideBoxes ( pos0, extents0 ) ( pos1, extents1 ) =
 
         ( ox, oy ) =
             -- overlaps
-            (Vec2.add extents0 extents1)
+            Vec2.add extents0 extents1
                 |> Vec2.sub (abs2 dist)
                 |> Vec2.toTuple
     in
-        if ox > 0 && oy > 0 then
-            if ox < oy then
-                if nx < 0 then
-                    CollisionResult (vec2 -1 0) ox
-                else
-                    CollisionResult (vec2 1 0) ox
-            else if ny < 0 then
-                CollisionResult (vec2 0 -1) oy
+    if ox > 0 && oy > 0 then
+        if ox < oy then
+            if nx < 0 then
+                CollisionResult (vec2 -1 0) ox
             else
-                CollisionResult (vec2 0 1) oy
+                CollisionResult (vec2 1 0) ox
+        else if ny < 0 then
+            CollisionResult (vec2 0 -1) oy
         else
-            CollisionResult (vec2 1 0) 0
+            CollisionResult (vec2 0 1) oy
+    else
+        CollisionResult (vec2 1 0) 0
 
 
 abs2 : Vec2 -> Vec2
@@ -209,7 +210,9 @@ abs2 v =
 
 
 {-| collide a rectangle with a circle
- -  takes position and half-length of rectangle, position and radius of circle
+
+  - takes position and half-length of rectangle, position and radius of circle
+
 -}
 collideRectWithCircle : ( Vec2, Vec2 ) -> ( Vec2, Float ) -> CollisionResult
 collideRectWithCircle ( posBox, boxExtents ) ( posCircle, circleRadius ) =
@@ -256,17 +259,17 @@ collideRectWithCircle ( posBox, boxExtents ) ( posCircle, circleRadius ) =
         normalLenSq =
             Vec2.lengthSquared normal
     in
-        if normalLenSq > circleRadius * circleRadius && (not inside) then
-            CollisionResult (vec2 1 0) 0
+    if normalLenSq > circleRadius * circleRadius && not inside then
+        CollisionResult (vec2 1 0) 0
+    else
+        let
+            penetration =
+                circleRadius + sqrt normalLenSq
+        in
+        if inside then
+            CollisionResult (Vec2.scale -1 (Vec2.normalize normal)) penetration
         else
-            let
-                penetration =
-                    circleRadius + sqrt normalLenSq
-            in
-                if inside then
-                    CollisionResult (Vec2.scale -1 (Vec2.normalize normal)) penetration
-                else
-                    CollisionResult (Vec2.normalize normal) penetration
+            CollisionResult (Vec2.normalize normal) penetration
 
 
 {-| modify bodies' trajectories based off the colision result
@@ -280,26 +283,26 @@ resolveCollision { normal, penetration } b0 b1 =
         velocityAlongNormal =
             Vec2.dot relativeVelocity normal
     in
-        if penetration == 0 || velocityAlongNormal > 0 then
-            ( b0, b1 )
-            -- no collision or velocities separating
-        else
-            let
-                restitution =
-                    -- collision restitution
-                    min b0.restitution b1.restitution
+    if penetration == 0 || velocityAlongNormal > 0 then
+        ( b0, b1 )
+        -- no collision or velocities separating
+    else
+        let
+            restitution =
+                -- collision restitution
+                min b0.restitution b1.restitution
 
-                invMassSum =
-                    (b0.inverseMass + b1.inverseMass)
+            invMassSum =
+                b0.inverseMass + b1.inverseMass
 
-                j =
-                    -- impulse scalar
-                    (-(1 + restitution) * velocityAlongNormal) / invMassSum
+            j =
+                -- impulse scalar
+                (-(1 + restitution) * velocityAlongNormal) / invMassSum
 
-                impulse =
-                    -- impulse vector
-                    Vec2.scale j normal
-            in
-                ( { b0 | velocity = Vec2.sub b0.velocity (Vec2.scale b0.inverseMass impulse) }
-                , { b1 | velocity = Vec2.add b1.velocity (Vec2.scale b1.inverseMass impulse) }
-                )
+            impulse =
+                -- impulse vector
+                Vec2.scale j normal
+        in
+        ( { b0 | velocity = Vec2.sub b0.velocity (Vec2.scale b0.inverseMass impulse) }
+        , { b1 | velocity = Vec2.add b1.velocity (Vec2.scale b1.inverseMass impulse) }
+        )

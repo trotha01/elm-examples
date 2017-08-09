@@ -1,6 +1,6 @@
 module Main exposing (..)
 
-import Html exposing (Html, text, input, div)
+import Html exposing (Html, div, input, text)
 import Html.Attributes exposing (value)
 import Html.Events exposing (on)
 import Json.Decode as Json
@@ -63,10 +63,10 @@ view model =
             []
         , div
             []
-            [ text ("Start: " ++ (toString model.selection.start)) ]
+            [ text ("Start: " ++ toString model.selection.start) ]
         , div
             []
-            [ text ("End: " ++ (toString model.selection.end)) ]
+            [ text ("End: " ++ toString model.selection.end) ]
         ]
 
 
