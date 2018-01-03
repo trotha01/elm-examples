@@ -59,14 +59,9 @@ update msg model =
 view : Model -> Html Msg
 view model =
     div []
-        [ input [ value "Hello, World!", on "select" selectionDecoder ]
-            []
-        , div
-            []
-            [ text ("Start: " ++ toString model.selection.start) ]
-        , div
-            []
-            [ text ("End: " ++ toString model.selection.end) ]
+        [ input [ value "Hello, World!", on "select" selectionDecoder ] []
+        , div [] [ text ("Start: " ++ toString model.selection.start) ]
+        , div [] [ text ("End: " ++ toString model.selection.end) ]
         ]
 
 
