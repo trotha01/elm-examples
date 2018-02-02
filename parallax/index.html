@@ -8235,55 +8235,75 @@ var _user$project$Main$subscriptions = function (model) {
 	return _elm_lang$core$Platform_Sub$none;
 };
 var _user$project$Main$parallaxVid = function (video) {
-	return A3(
-		_elm_lang$html$Html$node,
-		'video',
+	return A2(
+		_elm_lang$html$Html$div,
 		{
 			ctor: '::',
 			_0: _elm_lang$html$Html_Attributes$style(
 				{
 					ctor: '::',
-					_0: {ctor: '_Tuple2', _0: 'width', _1: '100%'},
-					_1: {
-						ctor: '::',
-						_0: {ctor: '_Tuple2', _0: 'min-height', _1: '300px'},
-						_1: {ctor: '[]'}
-					}
-				}),
-			_1: {
-				ctor: '::',
-				_0: _elm_lang$html$Html_Attributes$autoplay(true),
-				_1: {
-					ctor: '::',
-					_0: _elm_lang$html$Html_Attributes$loop(true),
+					_0: {ctor: '_Tuple2', _0: 'height', _1: '400px'},
 					_1: {ctor: '[]'}
-				}
-			}
+				}),
+			_1: {ctor: '[]'}
 		},
 		{
 			ctor: '::',
-			_0: A2(
-				_elm_lang$html$Html$source,
+			_0: A3(
+				_elm_lang$html$Html$node,
+				'video',
 				{
 					ctor: '::',
-					_0: _elm_lang$html$Html_Attributes$src(video),
+					_0: _elm_lang$html$Html_Attributes$style(
+						{
+							ctor: '::',
+							_0: {ctor: '_Tuple2', _0: 'width', _1: '100%'},
+							_1: {
+								ctor: '::',
+								_0: {ctor: '_Tuple2', _0: 'min-height', _1: '300px'},
+								_1: {
+									ctor: '::',
+									_0: {ctor: '_Tuple2', _0: 'position', _1: 'fixed'},
+									_1: {ctor: '[]'}
+								}
+							}
+						}),
 					_1: {
 						ctor: '::',
-						_0: _elm_lang$html$Html_Attributes$style(
-							{
-								ctor: '::',
-								_0: {ctor: '_Tuple2', _0: 'type', _1: 'video/mp4'},
-								_1: {ctor: '[]'}
-							}),
-						_1: {ctor: '[]'}
+						_0: _elm_lang$html$Html_Attributes$autoplay(true),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$loop(true),
+							_1: {ctor: '[]'}
+						}
 					}
 				},
-				{ctor: '[]'}),
-			_1: {
-				ctor: '::',
-				_0: _elm_lang$html$Html$text('Your browser does not support the video tag'),
-				_1: {ctor: '[]'}
-			}
+				{
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$source,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$src(video),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$style(
+									{
+										ctor: '::',
+										_0: {ctor: '_Tuple2', _0: 'type', _1: 'video/mp4'},
+										_1: {ctor: '[]'}
+									}),
+								_1: {ctor: '[]'}
+							}
+						},
+						{ctor: '[]'}),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$html$Html$text('Your browser does not support the video tag'),
+						_1: {ctor: '[]'}
+					}
+				}),
+			_1: {ctor: '[]'}
 		});
 };
 var _user$project$Main$parallax = function (image) {

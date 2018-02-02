@@ -94,22 +94,28 @@ parallax image =
 
 parallaxVid : String -> Html Msg
 parallaxVid video =
-    node "video"
+    div
         [ style
-            [ ( "width", "100%" )
-            , ( "min-height", "300px" )
-            ]
-        , autoplay True
-        , loop True
+            [ ( "height", "400px" ) ]
         ]
-        [ source
-            [ src video
-            , style
-                [ ( "type", "video/mp4" )
+        [ node "video"
+            [ style
+                [ ( "width", "100%" )
+                , ( "min-height", "300px" )
+                , ( "position", "fixed" )
                 ]
+            , autoplay True
+            , loop True
             ]
-            []
-        , text "Your browser does not support the video tag"
+            [ source
+                [ src video
+                , style
+                    [ ( "type", "video/mp4" )
+                    ]
+                ]
+                []
+            , text "Your browser does not support the video tag"
+            ]
         ]
 
 
